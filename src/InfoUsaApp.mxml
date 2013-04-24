@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+               xmlns:s="library://ns.adobe.com/flex/spark"
+               xmlns:mx="library://ns.adobe.com/flex/mx"
+               xmlns:esri="http://www.esri.com/2008/ags"
+               controlBarVisible="true">
+    <fx:Script>
+        <![CDATA[
+            import mx.events.FlexEvent;
+
+            [Bindable]
+            public var where:String = "where=state ne 'XX'";
+
+            [Bindable]
+            public var lo:String = "lo=NaN";
+
+            [Bindable]
+            public var hi:String = "hi=NaN";
+
+            [Bindable]
+            public var ramp:String = "ramp=FF0000,FFFF00,0000FF";
+        ]]>
+    </fx:Script>
+    <s:controlBarLayout>
+        <s:HorizontalLayout paddingBottom="3"
+                            paddingLeft="3"
+                            paddingRight="3"
+                            paddingTop="3"
+                            verticalAlign="middle"/>
+    </s:controlBarLayout>
+    <s:controlBarContent>
+        <s:CheckBox id="cb"/>
+        <s:TextInput width="100%"
+                     enter="dl.refresh()"
+                     text="@{where}"/>
+        <s:TextInput enter="dl.refresh()" text="@{lo}"/>
+        <s:TextInput enter="dl.refresh()" text="@{hi}"/>
+        <s:TextInput width="100%"
+                     enter="dl.refresh()"
+                     text="@{ramp}"/>
+        <s:HSlider id="hs"
+                   maximum="1.0"
+                   minimum="0"
+                   stepSize="0.01"
+                   value="0.75"/>
+    </s:controlBarContent>
+    <esri:Map id="map"
+              attributionVisible="false"
+              crosshairVisible="true"
+              logoVisible="true"
+              scaleBarVisible="true"
+              wrapAround180="true"
+              zoomSliderVisible="false">
+        <esri:extent>
+            <esri:Extent xmin="-15368123" ymin="2022829" xmax="-6332654" ymax="6567469"/>
+        </esri:extent>
+        <esri:ArcGISTiledMapServiceLayer url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer"/>
+        <esri:ArcGISDynamicMapServiceLayer id="dl"
+                                           alpha="{hs.value}"
+                                           url="http://localhost:8080/ArcGISWebApp/rest/services/InfoUSA/MapServer"
+                                           visible="{cb.selected}">
+            <esri:layerDefinitions>
+                <fx:Array>
+                    <fx:String>{where}</fx:String>
+                    <fx:String>{ramp}</fx:String>
+                    <fx:String>{lo}</fx:String>
+                    <fx:String>{hi}</fx:String>
+                </fx:Array>
+            </esri:layerDefinitions>
+        </esri:ArcGISDynamicMapServiceLayer>
+    </esri:Map>
+</s:Application>
